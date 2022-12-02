@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from simple_proxy.proxy import __version__, __author__
+from simple_proxy import __version__, __author__
 import pathlib
 
 WORK_DIR = pathlib.Path(__file__).parent
@@ -14,9 +14,13 @@ with open('README.md') as readme_file:
     
 def install_requires():
     file = WORK_DIR / "requirements.txt"
-    install_reqs = parse_requirements(str(file), session='sync')
-    return [str(ir.req) for ir in install_reqs]
-
+    print(file)
+    install_reqs = parse_requirements(str(file), session=False)
+    try:
+        requirements = [str(ir.req) for ir in install_reqs]
+    except:
+        requirements = [str(ir.requirement) for ir in install_reqs]
+    return requirements
 setup(
 	name='CustomProxy',
 	version=__version__,
@@ -28,7 +32,6 @@ setup(
 	url="https://github.com/dyseo/custom-proxy",
 	download_url="https://github.com/dyseo/custom-proxy",
 	license='MIT',
-	requires_python='>=3.5',
 	install_requires=install_requires(),
 	extras_require={
 		'ujson': ['ujson']
@@ -40,8 +43,8 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "Topic :: Internet",
-        "Topic :: Software Development :: Libraries :: Application Frameworks"
-        "Topic :: Software Development :: Libraries :: Python Modules"
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ]
 )

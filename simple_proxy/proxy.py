@@ -12,7 +12,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 
 class CustomProxy(object):
-    def __init__(self, code: Union[str, List[str], Tuple[str]] = ['ID']) -> None:
+    def __init__(self, code: Union[str, List[str], Tuple[str]] = []) -> None:
         assert isinstance(code, (str, list, tuple)), 'Code must be list or str or tuple'
         self.base_url = 'https://free-proxy-list.net/'
         self.session = requests.Session()
@@ -20,18 +20,35 @@ class CustomProxy(object):
         self.temp_path = tempfile.gettempdir() + '/temp.json'
         self.loads()
 
-    def random(self):
+    def random(self, pretty=True):
+        """
+        generate random proxy
+        
+        args:
+            pretty: bool : default True
+            
+        if pretty is True the ouput will be prettifier e.g http://123.1.1.1:80
+        
+        return dict or str
+        """
         temp = self.temp_path
         with open(temp, 'r') as f:
             js = json.load(f)
             code = self.code if isinstance(self.code, (list, tuple)) else [self.code]
-            dummy = [i for i in js if i['code'] in code]
+            if code:
+                dummy = [i for i in js if i['code'] in code]
+            else:
+                dummy = [i for i in js]
+                
             ret = random.choice(dummy)
             proxy = {
                 'host': f'{ret["ip"]}:{ret["port"]}',
                 'code': ret['code'],
                 'loc': ret['loc']
             }
+            if pretty:
+                return 'http://' + ret['ip'] + ':' + ret['port']
+            
             return proxy
             
     def __request(self, url):
